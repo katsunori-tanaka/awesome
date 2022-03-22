@@ -1,0 +1,175 @@
+Public Function PrintUserAttributes()
+
+    '参考 http://www.selfadsi.org/user-attributes.htm
+    Dim objSysInfo, objUser, objComp
+    Set objSysInfo = CreateObject("ADSystemInfo")
+    Set objUser = GetObject("LDAP://" & objSysInfo.UserName)
+    
+    On Error Resume Next
+    
+    With objUser
+    
+        Debug.Print "accountExpires: ," & .accountExpires
+        Debug.Print "adminDescription: ," & .adminDescription
+        Debug.Print "adminDisplayName: ," & .adminDisplayName
+        Debug.Print "ADsPath: ," & .ADsPath
+        Debug.Print "altRecipient: ," & .altRecipient
+        Debug.Print "altRecipientBL: ," & .altRecipientBL
+        Debug.Print "authOrig: ," & .authOrig
+        Debug.Print "authOrigBL: ," & .authOrigBL
+        Debug.Print "autoReplyMessage: ," & .autoReplyMessage
+        Debug.Print "badPasswordTime: ," & .badPasswordTime
+        Debug.Print "badPwdCount: ," & .badPwdCount
+        Debug.Print "c: ," & .c
+        Debug.Print "canonicalName: ," & .canonicalName
+        Debug.Print "Class: ," & .Class
+        Debug.Print "co: ," & .co
+        Debug.Print "comment: ," & .comment
+        Debug.Print "company: ," & .company
+        Debug.Print "countryCode: ," & .countryCode
+        Debug.Print "createTimeStamp: ," & .createTimeStamp
+        Debug.Print "deletedItemFlags: ," & .deletedItemFlags
+        Debug.Print "delivContLength: ," & .delivContLength
+        Debug.Print "deliverAndRedirect: ," & .deliverAndRedirect
+        Debug.Print "department: ," & .department
+        Debug.Print "departmentNumber: ," & .departmentNumber
+        Debug.Print "description: ," & .Description
+        Debug.Print "directReports: ," & .directReports
+        Debug.Print "displayName: ," & .DisplayName
+        Debug.Print "displayNamePrintable: ," & .displayNamePrintable
+        Debug.Print "distinguishedName: ," & .distinguishedName
+        Debug.Print "division: ," & .Division
+        Debug.Print "dLMemRejectPerms: ," & .dLMemRejectPerms
+        Debug.Print "dLMemRejectPermsBL: ," & .dLMemRejectPermsBL
+        Debug.Print "dLMemSubmitPerms: ," & .dLMemSubmitPerms
+        Debug.Print "dLMemSubmitPermsBL: ," & .dLMemSubmitPermsBL
+        Debug.Print "employeeID: ," & .EmployeeID
+        Debug.Print "employeeNumber: ," & .employeeNumber
+        Debug.Print "employeeType: ," & .employeeType
+        Debug.Print "extensionData: ," & .extensionData
+        Debug.Print "extensionAttribute1: ," & .extensionAttribute1
+        Debug.Print "extensionAttribute2: ," & .extensionAttribute2
+        Debug.Print "extensionAttribute3: ," & .extensionAttribute3
+        Debug.Print "extensionAttribute4: ," & .extensionAttribute4
+        Debug.Print "extensionAttribute5: ," & .extensionAttribute5
+        Debug.Print "extensionAttribute6: ," & .extensionAttribute6
+        Debug.Print "extensionAttribute7: ," & .extensionAttribute7
+        Debug.Print "extensionAttribute8: ," & .extensionAttribute8
+        Debug.Print "extensionAttribute9: ," & .extensionAttribute9
+        Debug.Print "extensionAttribute10: ," & .extensionAttribute10
+        Debug.Print "extensionAttribute11: ," & .extensionAttribute11
+        Debug.Print "extensionAttribute12: ," & .extensionAttribute12
+        Debug.Print "extensionAttribute13: ," & .extensionAttribute13
+        Debug.Print "extensionAttribute14: ," & .extensionAttribute14
+        Debug.Print "extensionAttribute15: ," & .extensionAttribute15
+        Debug.Print "facsimileTelephoneNumber: ," & .facsimileTelephoneNumber
+        Debug.Print "garbageCollPeriod: ," & .garbageCollPeriod
+        Debug.Print "givenName: ," & .givenName
+        Debug.Print "homeDirectory: ," & .homeDirectory
+        Debug.Print "homeDrive: ," & .homeDrive
+        Debug.Print "homeMDB: ," & .homeMDB
+        Debug.Print "homeMTA: ," & .homeMTA
+        Debug.Print "homePhone: ," & .homePhone
+        Debug.Print "info: ," & .info
+        Debug.Print "initials: ," & .initials
+        Debug.Print "ipPhone: ," & .ipPhone
+        Debug.Print "isDeleted: ," & .isDeleted
+        Debug.Print "isRecycled: ," & .isRecycled
+        Debug.Print "l: ," & .l
+        Debug.Print "lastKnownParent: ," & .lastKnownParent
+        Debug.Print "lastLogoff: ," & .LastLogoff
+        Debug.Print "lastLogon: ," & .lastLogon
+        Debug.Print "lastLogonTimestamp: ," & .lastLogonTimestamp
+        Debug.Print "legacyExchangeDN: ," & .legacyExchangeDN
+        Debug.Print "lockoutTime: ," & .lockoutTime
+        Debug.Print "logonCount: ," & .logonCount
+        Debug.Print "logonHours: ," & .logonHours
+        Debug.Print "mail: ," & .mail
+        Debug.Print "mailNickname: ," & .mailNickname
+        Debug.Print "manager: ," & .manager
+        Debug.Print "mDBOverHardQuotaLimit: ," & .mDBOverHardQuotaLimit
+        Debug.Print "mDBOverQuotaLimit: ," & .mDBOverQuotaLimit
+        Debug.Print "mDBStorageQuota: ," & .mDBStorageQuota
+        Debug.Print "mDBUseDefaults: ," & .mDBUseDefaults
+        Debug.Print "memberOf: ," & .memberOf
+        Debug.Print "mobile: ," & .mobile
+        Debug.Print "modifyTimeStamp: ," & .modifyTimeStamp
+        Debug.Print "msExchHideFromAddressLists: ," & .msExchHideFromAddressLists
+        Debug.Print "msExchHomeServerName: ," & .msExchHomeServerName
+        Debug.Print "msExchMailboxSecurityDescriptor: ," & .msExchMailboxSecurityDescriptor
+        Debug.Print "msExchMasterAccountSID: ," & .msExchMasterAccountSID
+        Debug.Print "msExchOmaAdminWirelessEnable: ," & .msExchOmaAdminWirelessEnable
+        Debug.Print "msExchPoliciesExcluded: ," & .msExchPoliciesExcluded
+        Debug.Print "msExchRecipLimit: ," & .msExchRecipLimit
+        Debug.Print "msExchRequireAuthToSendTo: ," & .msExchRequireAuthToSendTo
+        Debug.Print "msExchUserAccountControl: ," & .msExchUserAccountControl
+        Debug.Print "msNPAllowDialin: ," & .msNPAllowDialin
+        Debug.Print "msNPCallingStationID: ," & .msNPCallingStationID
+        Debug.Print "msNPSavedCallingStationID: ," & .msNPSavedCallingStationID
+        Debug.Print "msRADIUSCallbackNumber: ," & .msRADIUSCallbackNumber
+        Debug.Print "msRADIUSFramedIPAddress: ," & .msRADIUSFramedIPAddress
+        Debug.Print "msRADIUSFramedRoute: ," & .msRADIUSFramedRoute
+        Debug.Print "msRADIUSServiceType: ," & .msRADIUSServiceType
+        Debug.Print "msRASSavedCallbackNumber: ," & .msRASSavedCallbackNumber
+        Debug.Print "msRASSavedFramedIPAddress: ," & .msRASSavedFramedIPAddress
+        Debug.Print "msRASSavedFramedRoute: ," & .msRASSavedFramedRoute
+        Debug.Print "msSFU30GidNumber: ," & .msSFU30GidNumber
+        Debug.Print "msSFU30HomeDirectory: ," & .msSFU30HomeDirectory
+        Debug.Print "msSFU30LoginShell: ," & .msSFU30LoginShell
+        Debug.Print "msSFU30Name: ," & .msSFU30Name
+        Debug.Print "msSFU30NisDomain: ," & .msSFU30NisDomain
+        Debug.Print "msSFU30Password: ," & .msSFU30Password
+        Debug.Print "msSFU30UidNumber: ," & .msSFU30UidNumber
+        Debug.Print "name: ," & .name
+        Debug.Print "nTSecurityDescriptor: ," & .nTSecurityDescriptor
+        Debug.Print "objectCategory: ," & .objectCategory
+        Debug.Print "objectClass: ," & .objectClass
+        Debug.Print "objectGUID: ," & .objectGUID
+        Debug.Print "objectSid: ," & .objectSid
+        Debug.Print "otherFacsimileTelephoneNumber: ," & .otherFacsimileTelephoneNumber
+        Debug.Print "otherHomePhone: ," & .otherHomePhone
+        Debug.Print "otherIpPhone: ," & .otherIpPhone
+        Debug.Print "otherMobile: ," & .otherMobile
+        Debug.Print "otherPager: ," & .otherPager
+        Debug.Print "otherTelephone: ," & .otherTelephone
+        Debug.Print "pager: ," & .pager
+        Debug.Print "Parent: ," & .Parent
+        Debug.Print "physicalDeliveryOfficeName: ," & .physicalDeliveryOfficeName
+        Debug.Print "postalCode: ," & .postalCode
+        Debug.Print "postOfficeBox: ," & .postOfficeBox
+        Debug.Print "primaryGroupID: ," & .primaryGroupID
+        Debug.Print "profilePath: ," & .profilePath
+        Debug.Print "protocolSettings: ," & .protocolSettings
+        Debug.Print "proxyAddresses: ," & .proxyAddresses
+        Debug.Print "publicDelegates: ," & .publicDelegates
+        Debug.Print "publicDelegatesBL: ," & .publicDelegatesBL
+        Debug.Print "pwdLastSet : ," & .pwdLastSet
+        Debug.Print "sAMAccountName: ," & .sAMAccountName
+        Debug.Print "scriptPath: ," & .scriptPath
+        Debug.Print "seeAlso: ," & .SeeAlso
+        Debug.Print "securityProtocol: ," & .securityProtocol
+        Debug.Print "sIDHistory: ," & .sIDHistory
+        Debug.Print "sn: ," & .sn
+        Debug.Print "st: ," & .st
+        Debug.Print "streetAddress: ," & .streetAddress
+        Debug.Print "submissionContLength: ," & .submissionContLength
+        Debug.Print "telephoneNumber: ," & .telephoneNumber
+        Debug.Print "textEncodedORAddress: ," & .textEncodedORAddress
+        Debug.Print "title: ," & .title
+        Debug.Print "unauthOrig: ," & .unauthOrig
+        Debug.Print "unauthOrigBL: ," & .unauthOrigBL
+        Debug.Print "url: ," & .url
+        Debug.Print "userAccountControl: ," & .userAccountControl
+        Debug.Print "userCertificate: ," & .userCertificate
+        Debug.Print "userParameters: ," & .userParameters
+        Debug.Print "userPrincipalName: ," & .userPrincipalName
+        Debug.Print "userWorkstations: ," & .userWorkstations
+        Debug.Print "uSNChanged: ," & .uSNChanged
+        Debug.Print "uSNCreated: ," & .uSNCreated
+        Debug.Print "whenChanged: ," & .whenChanged
+        Debug.Print "whenCreated: ," & .whenCreated
+        Debug.Print "wWWHomePage: ," & .wWWHomePage
+
+    End With
+
+End Function
