@@ -1,0 +1,66 @@
+Excel VBAにてActiveDirectoryのユーザなどの管理をしたいと考えています。
+（理由：操作ミスなどを防ぐために、AD操作は全てExcelからにしたい）
+
+情報を取得する対象のユーザが分かっていれば、以下の方法で、情報を取得可能かと思います。
+（実行するユーザが、ADの操作権限がある前提で、suzukiというユーザの情報を取得する場合）
+Dim objSysInfo
+Dim objUser
+Set objSysInfo = CreateObject("ADSystemInfo")
+Set objUser = GetObject("LDAP://CN=suzuki,OU=OU123_ユーザー,OU=OU123,DC=ad,DC=test,DC=com")
+　AD：ad.test.com
+　OU：OU123→OU123_ユーザー
+
+OU123_ユーザー配下のすべてのユーザ情報を取得する場合には、どのようにすればよろしいでしょうか？
+
+----------------------------------------------------------------------------------------------------------
+
+質問文に書いてある単一ユーザーを取得する書き方に沿えばこんな感じかなぁ。
+Dim objOU, objUser
+Set ObjOU = CreateObject("LDAP://OU=OU123_ユーザー,OU=OU123,DC=ad,DC=test,DC=com")
+objOU.Filter = Array("user")
+For Each objUser In objOU
+　Debug.Print objUser.Name
+Next
+
+複数のアカウントを取得するので ADODB で DB のように取り扱うこともできそう。(ちょっと長いけど)
+Dim objConn, objComm, objRst
+Set objConn = CreateObject("ADODB.Connection")
+Set objComm = CreateObject("ADODB.Command")
+objConn.Provider = "ADsDSOObject"
+objConn.Open "Active Directory Provider"
+set objComm.ActiveConnection = objConn
+
+objComm.Properties("Page Size") = 1000 ' 検索結果の最大取得数
+objComm.Properties("Searchscope") = 1 ' この OU の配下も全部なら 2 を指定
+objComm.CommandText = "SELECT Name From 'LDAP://OU=OU123_ユーザー,OU=OU123,DC=ad,DC=test,DC=com' WHERE objectCategory='user'"
+Set objRst = objComm.Execute
+
+objRst.MoveFirst
+Do Until objRst.EOF
+　Debug.Print objRst.Fields("Name").Value
+　objRst.MoveNext
+Loop
+
+
+私は今まで Excel でアカウントの台帳を作っていたので、これを元に Active Directory を操作できないかと考えていたのですが、最近になって考え方を改めました。
+台帳はあくまでも Active Directory なので、ユーザーのリストがほしければ都度取得すればいいじゃないか、と。
+アカウント登録や変更も、[対象アカウントの存在確認] → [更新] をすりゃいいじゃないか、と。
+それで Excel 台帳による二重管理を捨て、PowerShell によるいくつかのスクリプト ファイルを作っているところです。
+一覧を取得するだけなら以下の 1行でできちゃいますし。
+Get-ADUser -Filter * -SearchBase "OU=OU123_ユーザー,OU=OU123,DC=ad,DC=test,DC=com" -Properties * -SearchScope OneLevel | ForEach-Object { $_.Name}
+
+----------------------------------------------------------------------------------------------------------------------
+
+今日の質問 : OU とそのサブ OU 内のすべてのユーザーの一覧を取得する方法はありますか
+http://gallery.technet.microsoft.com/scriptcente …
+で解決するかも？
+※当方、AD環境ではないのでここまで。
+
+蛇足。
+リモートレジストリの参照の件ですが、管理共有を復活させても良いかも？
+https://support.microsoft.com/ja-jp/kb/951016
+reg query \\win7pc\hklm /s では全てを取得できそうです。
+（途中で止めてしまったので・・・）
+ただし、セキュリティ的にゆるくなります。
+\\Win7PC\C$ などでエクスプローラでも操作できるようになったり
+shutdown /r /m \\win7pc とかも思いのままに・・・。
