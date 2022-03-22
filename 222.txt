@@ -1,0 +1,63 @@
+ユーザー名に基づくADの詳細の取得 (2)
+私は、電子メールアドレス、電話番号など、私が現在使用しているコードなどの広告からユーザーの詳細を取得するコードがあります：
+----------------------------------------------------------------------------------------------------------------------------
+Set objSysInfo = CreateObject("ADSystemInfo")
+strUser = objSysInfo.UserName
+msgbox(strUser)
+Set objUser = GetObject("LDAP://" & strUser)
+----------------------------------------------------------------------------------------------------------------------------
+現在ログインしているユーザーの詳細を取得します。 しかし、今私がする必要があるのは、ユーザーのユーザー名を解析し、それに基づいて詳細を取得することです。
+
+objSysinfo.UserNameをユーザー名に変更しようとしましたが、空白が返されました。
+----------------------------------------------------------------------------------------------------------------------------
+Set objSysInfo = CreateObject("ADSystemInfo")
+strUser = "SomeUserName"
+msgbox(strUser)
+Set objUser = GetObject("LDAP://" & strUser)
+----------------------------------------------------------------------------------------------------------------------------
+提供されたユーザー名に基づいて広告の詳細を取得するにはどうしたらよいですか？
+
+LDAP URIには識別名が必要です。 アカウント名は機能しません。 アカウント名に基づいてユーザーオブジェクトを取得する場合は、「通常の」LDAPクエリが必要です。
+----------------------------------------------------------------------------------------------------------------------------
+username = "SomeUserName"
+
+Set rootDSE = GetObject("LDAP://RootDSE")
+base  = "<LDAP://" & rootDSE.Get("defaultNamingContext") & ">"
+'filter on user objects with the given account name
+fltr  = "(&(objectClass=user)(objectCategory=Person)" & _
+        "(sAMAccountName=" & username & "))"
+'add other attributes according to your requirements
+attr  = "distinguishedName,sAMAccountName"
+scope = "subtree"
+
+Set conn = CreateObject("ADODB.Connection")
+conn.Provider = "ADsDSOObject"
+conn.Open "Active Directory Provider"
+
+Set cmd = CreateObject("ADODB.Command")
+Set cmd.ActiveConnection = conn
+cmd.CommandText = base & ";" & fltr & ";" & attr & ";" & scope
+
+Set rs = cmd.Execute
+Do Until rs.EOF
+  WScript.Echo rs.Fields("distinguishedName").Value
+  rs.MoveNext
+Loop
+rs.Close
+
+conn.Close
+----------------------------------------------------------------------------------------------------------------------------
+
+私は定型コードを何度も何度もADQueryなくなってしまったので、しばらく前にクラス（ ADQuery ）でラップしました。
+
+あなたがドメインを1つしか持っていない場合、AnsgarのRootDSEにはもう1つのコメントがあります。 コードを変更して、他の場所を指すようにすることができます。
+
+----------------------------------------------------------------------------------------------------------------------------
+    base  = "<LDAP://" & rootDSE.Get("defaultNamingContext") & ">"
+----------------------------------------------------------------------------------------------------------------------------
+次のようなものに：
+
+----------------------------------------------------------------------------------------------------------------------------
+    base  = "<LDAP://" & "DC=corp,DC=foo,DC=com" & ">"
+----------------------------------------------------------------------------------------------------------------------------
+あなたのドメインのADドメインがcorp.foo.comの場合
