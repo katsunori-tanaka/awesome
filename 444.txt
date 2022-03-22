@@ -1,0 +1,43 @@
+'VBScript で Active Directory のユーザー アカウントを検索する
+'このサンプルでは Active Directory のユーザーアカウントを検索し、DNを取得します。
+
+Option Explicit
+Const SearchUser = "User1"
+Dim baseDN, objRootDSE
+Dim objConnection, objCommand, strCommandText
+Dim objRecordSet, strUserDN
+baseDN = ""
+
+' ベースDNの取得
+On Error Resume Next
+Set objRootDSE = GetObject("LDAP://rootDSE")
+If Err.Number <> 0 Then
+  WScript.Echo "ドメイン接続に失敗しました。終了します。"
+  WScript.Quit
+Else
+  baseDN = objRootDSE.Get("defaultNamingContext")
+End If
+On Error Goto 0
+
+' DCに接続して検索
+Set objConnection = CreateObject("ADODB.Connection")
+Set objCommand = CreateObject("ADODB.Command")
+objConnection.Provider = "ADsDSOObject"
+objConnection.Open "Active Directory Provider"
+objCommand.ActiveConnection = objConnection
+strCommandText = "<LDAP://" & baseDN & ">;" & _
+	"(&(objectClass=user)(sAMAccountName=" & SearchUser & "));" & _
+	"distinguishedName;" & _
+	"subtree"
+objCommand.CommandText = strCommandText
+Set objRecordSet = objCommand.Execute
+
+' 検索結果を表示
+If objRecordset.EOF Then
+  strUserDN = "ログオンアカウント " & SearchUser & " は見つかりませんでした。"
+Else
+  strUserDN = objRecordset.Fields("distinguishedName")
+End If
+WScript.Echo strUserDN
+objConnection.Close
+Set objCommand = Nothing
