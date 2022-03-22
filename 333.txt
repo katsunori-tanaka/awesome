@@ -1,0 +1,50 @@
+VBScriptでActiveDirectoryのドメインに接続しセキュリティグループに所属するグループとメンバを取得するサンプルです。
+
+
+'接続先のドメイン
+const dm = "test.local"
+
+'セキュリティグループに所属するグループ、メンバの取得
+getGroup_main()
+
+
+Sub getGroup_main
+    Set cn = CreateObject("ADODB.Connection")
+    Set rs = CreateObject("ADODB.Recordset")
+
+    cn.Provider = "ADsDSOObject"
+   'cn.Provider = "ADsDSOObject;User ID=domain\Administrator;Password=password;"
+    cn.Open "Active Directory Provider"
+
+    '抽出条件　Where以降を修正する必要あり
+    strSql = "select name,memberof,member from 'LDAP://" & dm &"' WHERE CN = 'Domain Admins' "
+    rs.Open strSql, cn
+    Do Until rs.EOF
+      'グループに所属するグループを取得
+      If Not IsNull(rs("memberof")) Then
+        For Each gp In rs("memberof").Value
+            WScript.Echo rs("name") & "," & GetOneName(cn, gp)
+        Next
+      Else
+        'WScript.Echo rs("name") & ",なし"
+      End If
+
+      'メンバの取得
+      If Not IsNull(rs("member")) Then
+        For Each gp In rs("member").Value
+                WScript.Echo rs("name") & ",name:" & GetOneName(cn, gp) & ",DN:" & gp
+        Next
+      Else
+        'WScript.Echo rs("name") & ",なし"
+      End If
+      rs.MoveNext
+    Loop
+End Sub
+
+Function GetOneName(cn, dn)
+    Set rs = CreateObject("ADODB.Recordset")
+    strSql = "select name from 'LDAP://" & dn & "'"
+    rs.Open strSql, cn
+    GetOneName = rs(0)
+End Function
+
